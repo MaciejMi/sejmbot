@@ -1,0 +1,28 @@
+{
+	"name": "captainbot",
+	"version": "0.0.1",
+	"main": "main.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MaciejMi/CaptainBot.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/MaciejMi/CaptainBot/issues"
+	},
+	"homepage": "https://github.com/MaciejMi/CaptainBot#readme",
+	"description": "",
+	"dependencies": {
+		"discord.js": "^14.21.0",
+		"dotenv": "^17.2.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.32.0",
+		"eslint": "^9.32.0"
+	}
+}
