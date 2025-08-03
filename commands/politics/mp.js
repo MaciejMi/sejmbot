@@ -1,0 +1,100 @@
+// commands/politics/mp.js
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+
+const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
+
+function normalize(str) {
+	return str
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.replace(/ł/g, 'l')
+}
+
+function findMatches(input, candidates) {
+	const inputNorm = normalize(input)
+	return candidates.filter(mp => {
+		const full = normalize(`${mp.firstName} ${mp.lastName}`)
+		const last = normalize(mp.lastName)
+		return full.includes(inputNorm) || last.includes(inputNorm)
+	})
+}
+
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('mp')
+		.setDescription('Get information about a Polish MP')
+		.addStringOption(option =>
+			option
+				.setName('name')
+				.setDescription('Full name or last name of the MP (e.g. Kowalski or Jan Kowalski)')
+				.setRequired(true)
+		),
+
+	async execute(interaction) {
+		const nameInput = interaction.options.getString('name')
+		await interaction.deferReply()
+
+		try {
+			const response = await fetch(SEJM_API_URL)
+			const allMPs = await response.json()
+
+			const matches = findMatches(nameInput, allMPs)
+
+			if (matches.length === 0) {
+				await interaction.editReply(`❌ Nie znaleziono posła dla: ${nameInput}`)
+				return
+			}
+
+			if (matches.length === 1) {
+				const found = matches[0]
+				const profileLink = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${found.id}`
+
+				const embed = new EmbedBuilder()
+					.setTitle(`${found.firstName}${found.secondName ? ' ' + found.secondName : ''} ${found.lastName}`)
+					.setURL(found.active ? profileLink : null)
+					.addFields(
+						{ name: '📅 Data urodzenia', value: found.dateOfBirth || 'Brak danych', inline: true },
+						{ name: '📌 Miejsce urodzenia', value: found.placeOfBirth || 'Brak danych', inline: true },
+						{ name: '🎓 Wykształcenie', value: found.education || 'Brak danych', inline: true },
+						{ name: '💼 Zawód', value: found.profession || 'Brak danych', inline: true },
+						{ name: '📨 Email', value: found.email || 'Brak danych', inline: true },
+						{ name: '📊 Liczba głosów', value: found.votesReceived || 'Brak danych', inline: true },
+						{ name: '🧭 Klub', value: found.club || 'Brak danych', inline: true },
+						{ name: '🗺️ Województwo', value: found.voivodeship || 'Brak danych', inline: true },
+						{
+							name: '📍 Okręg',
+							value: `${found.districtName || 'Brak danych'} (nr ${found.districtNumber || 'Brak'})`,
+							inline: true,
+						},
+						{ name: '✅ Aktywny', value: found.active ? 'Tak' : 'Nie', inline: true }
+					)
+					.setColor(0x007acc)
+
+				await interaction.editReply({ embeds: [embed] })
+				return
+			}
+
+			const embed = new EmbedBuilder()
+				.setTitle('Znaleziono kilku posłów:')
+				.setDescription(
+					matches
+						.map(mp => {
+							const fullName = `${mp.firstName} ${mp.lastName}`
+							const profileLink = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${mp.id}`
+							const active = mp.active
+							return active
+								? `• [${fullName}](${profileLink}) — ${mp.club || 'Brak klubu'}`
+								: `• ${fullName} — ${mp.club || 'Brak klubu'} (nieaktywny)`
+						})
+						.join('\n')
+				)
+				.setColor(0x007acc)
+
+			await interaction.editReply({ embeds: [embed] })
+		} catch (error) {
+			console.error(error)
+			await interaction.editReply('❌ Wystąpił błąd przy pobieraniu danych.')
+		}
+	},
+}
