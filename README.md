@@ -22,6 +22,10 @@
     - `sort`: by `Frekwencja` (attendance) or `Głosy` (number of votes)
     - `page`: display a specific page of the ranking
   - `/mandates` – displays the number of active MPs by party, along with a visual chart.
+  - `/coalition` – lets you select multiple parties to check if they meet parliamentary thresholds:
+	- 231 (absolute majority),
+	- 276 (to override a presidential veto),
+	- 307 (constitutional majority).
 - Interactive pagination with buttons (next/prev, +5/-5, first/last)
 - Data fetched from the official Sejm API:
   - `https://api.sejm.gov.pl/sejm/term10/MP`
@@ -132,6 +136,8 @@ Examples:
 │       └── topmp.js         # slash command for MP ranking
 │       └── mp.js            # search MP by name
 │       └── guessmp.js       # MP guessing game
+│       └── mandates.js      # it displays current mandat situation in sejm
+│       └── coalition.js     # checking coalition variants
 ├── events/                  # Discord event handlers (e.g., ready)
 ├── data/
 │   └── partyColours.json    # political club color mapping
@@ -163,13 +169,16 @@ Examples:
 
 ![Screen 5](./data/screen5.png)
 
+### Użycie komendy `/coalition`:
+
+![Screen 6](./data/screen6.png)
+
 ---
 
 ## 📋 Roadmap Ideas
 
 - Notifications for new votes, laws, or changes to MPs (e.g. resignations, replacements)
 - Support for selecting and browsing different Sejm terms (e.g. term IX, X)
-- Coalition majority checker with interactive UI
 - MP comparison feature (stats, activity, votes)
 - Voting history lookup for specific MPs
 - Searchable database of bills and legislative projects
