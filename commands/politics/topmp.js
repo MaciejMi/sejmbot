@@ -13,14 +13,7 @@ const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('topmp')
-		.setDescription('Wyświetla ranking posłów według wybranego kryterium')
-		.addStringOption(option =>
-			option
-				.setName('sort')
-				.setDescription('Kryterium sortowania')
-				.setRequired(false)
-				.addChoices({ name: 'Głosy', value: 'votes' }, { name: 'Aktywność (testowe)', value: 'activity' })
-		)
+		.setDescription('Wyświetla ranking posłów według liczby głosów')
 		.addIntegerOption(option =>
 			option.setName('page').setDescription('Numer strony startowej (1, 2, 3...)').setRequired(false)
 		),
@@ -29,22 +22,14 @@ module.exports = {
 		await interaction.deferReply()
 
 		try {
-			const sortBy = interaction.options.getString('sort') || 'votes'
 			const requestedPage = interaction.options.getInteger('page') || 1
 			const response = await fetch(SEJM_API_URL)
 			const allMPs = await response.json()
 
 			let sorted = [...allMPs]
-
-			if (sortBy === 'votes') {
-				sorted = sorted
-					.filter(mp => typeof mp.numberOfVotes === 'number')
-					.sort((a, b) => b.numberOfVotes - a.numberOfVotes)
-			} else if (sortBy === 'activity') {
-				sorted = sorted
-					.filter(mp => typeof mp.activityCount === 'number')
-					.sort((a, b) => b.activityCount - a.activityCount)
-			}
+			sorted = sorted
+				.filter(mp => typeof mp.numberOfVotes === 'number')
+				.sort((a, b) => b.numberOfVotes - a.numberOfVotes)
 
 			let page = Math.max(requestedPage - 1, 0)
 			const pageSize = 10
@@ -54,9 +39,7 @@ module.exports = {
 				const slice = sorted.slice(page * pageSize, (page + 1) * pageSize)
 				const embeds = slice.map((mp, idx) => {
 					const votes = mp.numberOfVotes?.toLocaleString('pl-PL') || 'Brak'
-					const activity = mp.activityCount?.toString() || 'Brak'
-					const label =
-						sortBy === 'votes' ? `📊 Głosy: **${votes}**` : sortBy === 'activity' ? `📌 Aktywność: **${activity}**` : ''
+					const label = `📊 Głosy: **${votes}**`
 					const party = mp.club || 'Brak'
 					const photoUrl = `https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini`
 					const profileUrl = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${mp.id}`

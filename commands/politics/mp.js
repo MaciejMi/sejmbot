@@ -1,4 +1,3 @@
-// commands/politics/mp.js
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
@@ -34,6 +33,24 @@ function findMatches(input, candidates) {
 	})
 }
 
+async function getAttendance(id) {
+	try {
+		const res = await fetch(`https://api.sejm.gov.pl/sejm/term10/MP/${id}/votings/stats`)
+		const data = await res.json()
+
+		const totalVotings = data.reduce((sum, item) => sum + item.numVotings, 0)
+		const totalMissed = data.reduce((sum, item) => sum + item.numMissed, 0)
+		if (totalVotings == 0) {
+			return 'Brak głosowań'
+		}
+		const attendance = ((totalVotings - totalMissed) / totalVotings) * 100
+		return `${attendance.toFixed(2)}%`
+	} catch (err) {
+		console.error('Błąd:', err)
+		return 'Błąd'
+	}
+}
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('mp')
@@ -65,6 +82,9 @@ module.exports = {
 				const profileLink = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${found.id}`
 				const profileImage = `https://api.sejm.gov.pl/sejm/term10/MP/${found.id}/photo`
 
+				// Pobieramy frekwencję
+				const attendance = await getAttendance(found.id)
+
 				const embed = new EmbedBuilder()
 					.setTitle(`${found.firstName}${found.secondName ? ' ' + found.secondName : ''} ${found.lastName}`)
 					.setURL(found.active ? profileLink : null)
@@ -75,6 +95,7 @@ module.exports = {
 						{ name: '💼 Zawód', value: found.profession || 'Brak danych', inline: true },
 						{ name: '📨 Email', value: found.email || 'Brak danych', inline: true },
 						{ name: '📊 Liczba głosów', value: found.numberOfVotes?.toString() || 'Brak danych', inline: true },
+						{ name: '📈 Frekwencja', value: attendance, inline: true },
 						{ name: '🧭 Klub', value: found.club || 'Brak danych', inline: true },
 						{ name: '🗺️ Województwo', value: found.voivodeship || 'Brak danych', inline: true },
 						{
