@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const partyColors = require('../../data/partyColours.json')
 
 const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
 
@@ -106,7 +107,9 @@ module.exports = {
 						{ name: '✅ Aktywny', value: found.active ? 'Tak' : 'Nie', inline: true }
 					)
 					.setThumbnail(profileImage)
-					.setColor(0x007acc)
+				const color = found.active === false ? partyColors['Nieaktywny'] : partyColors[found.club] || '#0099ff'
+
+				embed.setColor(color)
 
 				await interaction.editReply({ embeds: [embed] })
 				return
