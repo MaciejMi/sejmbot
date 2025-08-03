@@ -1,5 +1,10 @@
 # 🇵🇱 Sejmbot – Discord Bot for the Polish Parliament
 
+> ⚠️ **Warning: Pre-Release Version**  
+> This project is currently in active development and considered a **pre-release**.  
+> Some features may be incomplete, unstable, or missing altogether.  
+> Please report bugs or suggestions via [GitHub Issues](https://github.com/MaciejMi/sejmbot/issues).
+
 **Sejmbot** is a Discord bot that displays information about Members of the Polish Parliament (Sejm, 10th term), including attendance and voting statistics. It provides a paginated, interactive ranking system directly within Discord.
 
 ![Logo](./data/banner.png)
