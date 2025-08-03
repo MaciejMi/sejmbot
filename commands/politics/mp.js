@@ -49,26 +49,28 @@ module.exports = {
 			if (matches.length === 1) {
 				const found = matches[0]
 				const profileLink = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${found.id}`
+				const profileImage = `https://api.sejm.gov.pl/sejm/term10/MP/${found.id}/photo`
 
 				const embed = new EmbedBuilder()
 					.setTitle(`${found.firstName}${found.secondName ? ' ' + found.secondName : ''} ${found.lastName}`)
 					.setURL(found.active ? profileLink : null)
 					.addFields(
-						{ name: '📅 Data urodzenia', value: found.dateOfBirth || 'Brak danych', inline: true },
-						{ name: '📌 Miejsce urodzenia', value: found.placeOfBirth || 'Brak danych', inline: true },
-						{ name: '🎓 Wykształcenie', value: found.education || 'Brak danych', inline: true },
+						{ name: '📅 Data urodzenia', value: found.birthDate || 'Brak danych', inline: true },
+						{ name: '📌 Miejsce urodzenia', value: found.birthLocation || 'Brak danych', inline: true },
+						{ name: '🎓 Wykształcenie', value: found.educationLevel || 'Brak danych', inline: true },
 						{ name: '💼 Zawód', value: found.profession || 'Brak danych', inline: true },
 						{ name: '📨 Email', value: found.email || 'Brak danych', inline: true },
-						{ name: '📊 Liczba głosów', value: found.votesReceived || 'Brak danych', inline: true },
+						{ name: '📊 Liczba głosów', value: found.numberOfVotes?.toString() || 'Brak danych', inline: true },
 						{ name: '🧭 Klub', value: found.club || 'Brak danych', inline: true },
 						{ name: '🗺️ Województwo', value: found.voivodeship || 'Brak danych', inline: true },
 						{
 							name: '📍 Okręg',
-							value: `${found.districtName || 'Brak danych'} (nr ${found.districtNumber || 'Brak'})`,
+							value: `${found.districtName || 'Brak danych'} (nr ${found.districtNum?.toString() || 'Brak'})`,
 							inline: true,
 						},
 						{ name: '✅ Aktywny', value: found.active ? 'Tak' : 'Nie', inline: true }
 					)
+					.setThumbnail(profileImage)
 					.setColor(0x007acc)
 
 				await interaction.editReply({ embeds: [embed] })
