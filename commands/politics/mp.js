@@ -90,22 +90,50 @@ module.exports = {
 					.setTitle(`${found.firstName}${found.secondName ? ' ' + found.secondName : ''} ${found.lastName}`)
 					.setURL(found.active ? profileLink : null)
 					.addFields(
-						{ name: '📅 Data urodzenia', value: found.birthDate || 'Brak danych', inline: true },
-						{ name: '📌 Miejsce urodzenia', value: found.birthLocation || 'Brak danych', inline: true },
-						{ name: '🎓 Wykształcenie', value: found.educationLevel || 'Brak danych', inline: true },
-						{ name: '💼 Zawód', value: found.profession || 'Brak danych', inline: true },
-						{ name: '📨 Email', value: found.email || 'Brak danych', inline: true },
-						{ name: '📊 Liczba głosów', value: found.numberOfVotes?.toString() || 'Brak danych', inline: true },
-						{ name: '📈 Frekwencja', value: attendance, inline: true },
-						{ name: '🧭 Klub', value: found.club || 'Brak danych', inline: true },
-						{ name: '🗺️ Województwo', value: found.voivodeship || 'Brak danych', inline: true },
 						{
-							name: '📍 Okręg',
-							value: `${found.districtName || 'Brak danych'} (nr ${found.districtNum?.toString() || 'Brak'})`,
-							inline: true,
+							name: '👤 Dane osobowe',
+							value: [
+								`• **Data urodzenia:** ${found.birthDate || 'Brak danych'}`,
+								`• **Miejsce urodzenia:** ${found.birthLocation || 'Brak danych'}`,
+							].join('\n'),
 						},
-						{ name: '✅ Aktywny', value: found.active ? 'Tak' : 'Nie', inline: true }
+						{
+							name: '🎓 Edukacja i zawód',
+							value: [
+								`• **Wykształcenie:** ${found.educationLevel || 'Brak danych'}`,
+								`• **Zawód:** ${found.profession || 'Brak danych'}`,
+							].join('\n'),
+						},
+						{
+							name: '📬 Kontakt',
+							value: `• **Email:** ${found.email || 'Brak danych'}`,
+						},
+						{
+							name: '📊 Statystyki wyborcze',
+							value: [
+								`• **Liczba głosów:** ${found.numberOfVotes?.toLocaleString('pl-PL') || 'Brak danych'}`,
+								`• **Frekwencja:** ${attendance || 'Brak danych'}`,
+							].join('\n'),
+						},
+						{
+							name: '🏛️ Sejm',
+							value: [
+								`• **Klub:** ${found.club || 'Brak danych'}`,
+								`• **Województwo:** ${found.voivodeship || 'Brak danych'}`,
+								`• **Okręg:** ${found.districtName || 'Brak danych'} (nr ${found.districtNum || 'Brak'})`,
+								`• **Aktywny:** ${found.active ? 'Tak' : 'Nie'}`,
+							].join('\n'),
+						},
+						...(found.active
+							? [
+									{
+										name: '🔗 Profil sejmowy',
+										value: `[Kliknij tutaj, aby przejść do profilu](${profileLink})`,
+									},
+							  ]
+							: [])
 					)
+					.setFooter({ text: 'Dane z API Sejmu RP' })
 					.setThumbnail(profileImage)
 				const color = found.active === false ? partyColors['Nieaktywny'] : partyColors[found.club] || '#0099ff'
 
