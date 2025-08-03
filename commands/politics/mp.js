@@ -13,10 +13,24 @@ function normalize(str) {
 
 function findMatches(input, candidates) {
 	const inputNorm = normalize(input)
+
+	const exact = candidates.find(mp => {
+		const full = normalize(`${mp.firstName} ${mp.lastName}`)
+		const reverse = normalize(`${mp.lastName} ${mp.firstName}`)
+		return full === inputNorm || reverse === inputNorm
+	})
+
+	if (exact) return [exact]
+
+	const inputParts = inputNorm.split(' ')
 	return candidates.filter(mp => {
 		const full = normalize(`${mp.firstName} ${mp.lastName}`)
-		const last = normalize(mp.lastName)
-		return full.includes(inputNorm) || last.includes(inputNorm)
+		const reverse = normalize(`${mp.lastName} ${mp.firstName}`)
+		return (
+			full.includes(inputNorm) ||
+			reverse.includes(inputNorm) ||
+			inputParts.every(part => normalize(mp.firstName).includes(part) || normalize(mp.lastName).includes(part))
+		)
 	})
 }
 
