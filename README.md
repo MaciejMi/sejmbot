@@ -21,6 +21,7 @@
   - `/topmp` – a ranking of MPs, with optional parameters:
     - `sort`: by `Frekwencja` (attendance) or `Głosy` (number of votes)
     - `page`: display a specific page of the ranking
+  - `/mandates` – displays the number of active MPs by party, along with a visual chart.
 - Interactive pagination with buttons (next/prev, +5/-5, first/last)
 - Data fetched from the official Sejm API:
   - `https://api.sejm.gov.pl/sejm/term10/MP`
@@ -158,14 +159,23 @@ Examples:
 
 ![Screen 4](./data/screen4.png)
 
+### Użycie komendy `/mandates`:
+
+![Screen 5](./data/screen5.png)
+
 ---
 
 ## 📋 Roadmap Ideas
 
-- `/mandates` – show current Sejm party composition
-- Notifications for new votes or MP changes
-- Support for Sejm term selection,
-- And a lot of other ideas... 🚀
+- Notifications for new votes, laws, or changes to MPs (e.g. resignations, replacements)
+- Support for selecting and browsing different Sejm terms (e.g. term IX, X)
+- Coalition majority checker with interactive UI
+- MP comparison feature (stats, activity, votes)
+- Voting history lookup for specific MPs
+- Searchable database of bills and legislative projects
+- Club-level insights: rankings, average attendance, voting discipline
+- Integration with Sejm RSS or live updates
+- And many more ideas to come... 🚀
 
 ---
 

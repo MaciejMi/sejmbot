@@ -38,7 +38,7 @@ async function getAllAttendances(allMPs) {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('topmp')
-		.setDescription('Wyświetla ranking posłów według liczby głosów lub aktywności')
+		.setDescription(' Displays a ranking of MPs based on votes and activity.')
 		.addStringOption(option =>
 			option
 				.setName('sort')
