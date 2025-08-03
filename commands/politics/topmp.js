@@ -7,6 +7,8 @@ const {
 	ComponentType,
 } = require('discord.js')
 
+const partyColours = require('../../data/partyColours.json')
+
 const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
 
 async function getAttendance(id) {
@@ -42,7 +44,7 @@ module.exports = {
 				.setName('sort')
 				.setDescription('Rodzaj sortowania')
 				.setRequired(false)
-				.addChoices({ name: 'Głosy', value: 'votes' }, { name: 'Aktywność (frekwencja)', value: 'activity' })
+				.addChoices({ name: 'Głosy', value: 'votes' }, { name: 'Frekwencja', value: 'activity' })
 		)
 		.addIntegerOption(option =>
 			option.setName('page').setDescription('Numer strony startowej (1, 2, 3...)').setRequired(false)
@@ -91,12 +93,13 @@ module.exports = {
 					const photoUrl = `https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini`
 					const profileUrl = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${mp.id}`
 
+					const color = mp.active === false ? partyColours['Nieaktywny'] : partyColours[mp.club] || '#0099ff'
 					return new EmbedBuilder()
 						.setTitle(`${idx + 1 + page * pageSize}. ${mp.firstName} ${mp.lastName}`)
 						.setURL(profileUrl)
 						.setDescription(`🧭 Klub: **${party}**\n${label}`)
 						.setThumbnail(photoUrl)
-						.setColor(mp.active === false ? 0x777777 : 0x0099ff)
+						.setColor(color)
 				})
 
 				const rowTop = new ActionRowBuilder().addComponents(
