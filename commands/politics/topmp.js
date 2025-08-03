@@ -1,4 +1,3 @@
-// commands/politics/topmp.js
 const {
 	SlashCommandBuilder,
 	EmbedBuilder,
@@ -10,10 +9,41 @@ const {
 
 const SEJM_API_URL = 'https://api.sejm.gov.pl/sejm/term10/MP'
 
+async function getAttendance(id) {
+	try {
+		const res = await fetch(`https://api.sejm.gov.pl/sejm/term10/MP/${id}/votings/stats`)
+		const data = await res.json()
+		const totalVotings = data.reduce((sum, item) => sum + item.numVotings, 0)
+		const totalMissed = data.reduce((sum, item) => sum + item.numMissed, 0)
+		if (totalVotings === 0) return null
+		const attendance = ((totalVotings - totalMissed) / totalVotings) * 100
+		return attendance
+	} catch {
+		return null
+	}
+}
+
+async function getAllAttendances(allMPs) {
+	const results = await Promise.all(
+		allMPs.map(async mp => {
+			const frekwencja = await getAttendance(mp.id)
+			return { ...mp, frekwencja }
+		})
+	)
+	return results.filter(mp => typeof mp.frekwencja === 'number')
+}
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('topmp')
-		.setDescription('Wyświetla ranking posłów według liczby głosów')
+		.setDescription('Wyświetla ranking posłów według liczby głosów lub aktywności')
+		.addStringOption(option =>
+			option
+				.setName('sort')
+				.setDescription('Rodzaj sortowania')
+				.setRequired(false)
+				.addChoices({ name: 'Głosy', value: 'votes' }, { name: 'Aktywność (frekwencja)', value: 'activity' })
+		)
 		.addIntegerOption(option =>
 			option.setName('page').setDescription('Numer strony startowej (1, 2, 3...)').setRequired(false)
 		),
@@ -22,14 +52,21 @@ module.exports = {
 		await interaction.deferReply()
 
 		try {
+			const sortType = interaction.options.getString('sort') || 'votes'
 			const requestedPage = interaction.options.getInteger('page') || 1
 			const response = await fetch(SEJM_API_URL)
 			const allMPs = await response.json()
 
-			let sorted = [...allMPs]
-			sorted = sorted
-				.filter(mp => typeof mp.numberOfVotes === 'number')
-				.sort((a, b) => b.numberOfVotes - a.numberOfVotes)
+			let sorted
+
+			if (sortType === 'activity') {
+				const withAttendance = await getAllAttendances(allMPs)
+				sorted = withAttendance.sort((a, b) => b.frekwencja - a.frekwencja)
+			} else {
+				sorted = [...allMPs]
+					.filter(mp => typeof mp.numberOfVotes === 'number')
+					.sort((a, b) => b.numberOfVotes - a.numberOfVotes)
+			}
 
 			let page = Math.max(requestedPage - 1, 0)
 			const pageSize = 10
@@ -38,8 +75,18 @@ module.exports = {
 			const getPageContent = () => {
 				const slice = sorted.slice(page * pageSize, (page + 1) * pageSize)
 				const embeds = slice.map((mp, idx) => {
-					const votes = mp.numberOfVotes?.toLocaleString('pl-PL') || 'Brak'
-					const label = `📊 Głosy: **${votes}**`
+					let label
+
+					if (sortType === 'activity') {
+						label = `📈 Frekwencja: **${mp.frekwencja.toFixed(2)}%**`
+					} else {
+						label = `📊 Głosy: **${mp.numberOfVotes?.toLocaleString('pl-PL') || 'Brak'}**`
+					}
+
+					if (mp.active === false) {
+						label += `\n🔴 **Status: Nieaktywny poseł – nie pełni mandatu**`
+					}
+
 					const party = mp.club || 'Brak'
 					const photoUrl = `https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini`
 					const profileUrl = `https://www.sejm.gov.pl/Sejm10.nsf/posel.xsp?id=${mp.id}`
@@ -49,7 +96,7 @@ module.exports = {
 						.setURL(profileUrl)
 						.setDescription(`🧭 Klub: **${party}**\n${label}`)
 						.setThumbnail(photoUrl)
-						.setColor(0x0099ff)
+						.setColor(mp.active === false ? 0x777777 : 0x0099ff)
 				})
 
 				const rowTop = new ActionRowBuilder().addComponents(
@@ -90,7 +137,6 @@ module.exports = {
 
 				return { embeds, rows: [rowTop, rowBottom] }
 			}
-
 			let { embeds, rows } = getPageContent()
 			const message = await interaction.editReply({ embeds, components: rows })
 
