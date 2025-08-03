@@ -100,7 +100,7 @@ Displays a ranking of MPs. You can sort by:
 You can also choose which page to display:
 
 ```
-/topmp sort:activity page:2
+/topmp sort:Frekwencja page:2
 ```
 
 ### `/mp`
