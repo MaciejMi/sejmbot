@@ -23,9 +23,9 @@
     - `page`: display a specific page of the ranking
   - `/mandates` – displays the number of active MPs by party, along with a visual chart.
   - `/coalition` – lets you select multiple parties to check if they meet parliamentary thresholds:
-	- 231 (absolute majority),
-	- 276 (to override a presidential veto),
-	- 307 (constitutional majority).
+  - 231 (absolute majority),
+  - 276 (to override a presidential veto),
+  - 307 (constitutional majority).
 - Interactive pagination with buttons (next/prev, +5/-5, first/last)
 - Data fetched from the official Sejm API:
   - `https://api.sejm.gov.pl/sejm/term10/MP`
@@ -70,13 +70,13 @@ npm install
 
 ```json
 {
-	"KO": "#DD3E3B",
+	"KO": "#F9A340",
 	"Konfederacja": "#376ACB",
 	"Konfederacja_KP": "#192D5E",
 	"Lewica": "#9038B3",
 	"niez.": "#ffffff",
 	"PiS": "#00B8EE",
-	"Polska2050-TD": "#F8C21A",
+	"Polska2050-TD": "#F8C012",
 	"PSL-TD": "#2ED397",
 	"Razem": "#AD2178",
 	"Republikanie": "#163D64",
