@@ -11,21 +11,23 @@
 
 ## 🧠 Features
 
-- Three main slash commands:
-  - `/mp <first-name last-name>` or `/mp <last-name first-name>` – shows info about a specific MP.  
-    You can also search by just:
-    - first name (e.g. `Anna`)
-    - last name (e.g. `Kowalski`)  
-      If the input is ambiguous (e.g. common names), the bot will return a list of possible matches. You must then refine the search using the full name or a more unique part of the surname.
-  - `/guessmp` – a guessing game where you're shown a random MP's stats and must guess the correct one out of 4 MPs from the same political club.
-  - `/topmp` – a ranking of MPs, with optional parameters:
-    - `sort`: by `Frekwencja` (attendance) or `Głosy` (number of votes)
-    - `page`: display a specific page of the ranking
-  - `/mandates` – displays the number of active MPs by party, along with a visual chart.
-  - `/coalition` – lets you select multiple parties to check if they meet parliamentary thresholds:
+- Slash commands:
+- `/mp <first-name last-name>` or `/mp <last-name first-name>` – shows info about a specific MP.  
+  You can also search by just:
+- first name (e.g. `Anna`)
+- last name (e.g. `Kowalski`)  
+  If the input is ambiguous (e.g. common names), the bot will return a list of possible matches. You must then refine the search using the full name or a more unique part of the surname.
+- `/guessmp` – a guessing game where you're shown a random MP's stats and must guess the correct one out of 4 MPs from the same political club.
+- `/topmp` – a ranking of MPs, with optional parameters:
+  - `sort`: by `Frekwencja` (attendance) or `Głosy` (number of votes)
+  - `page`: display a specific page of the ranking
+- `/mandates` – displays the number of active MPs by party, along with a visual chart.
+- `/coalition` – lets you select multiple parties to check if they meet parliamentary thresholds:
   - 231 (absolute majority),
   - 276 (to override a presidential veto),
   - 307 (constitutional majority).
+- `/leave` – disconnects the bot from the current voice channel (if connected)
+- `/currentdebate` – checks if the SejmRP YouTube channel is live and plays the stream in the voice channel
 - Interactive pagination with buttons (next/prev, +5/-5, first/last)
 - Data fetched from the official Sejm API:
   - `https://api.sejm.gov.pl/sejm/term10/MP`
@@ -130,7 +132,7 @@ Examples:
 ## 🗂 Project Structure
 
 ```
-.
+
 ├── commands/
 │   └── politics/
 │       └── topmp.js         # slash command for MP ranking
@@ -138,6 +140,11 @@ Examples:
 │       └── guessmp.js       # MP guessing game
 │       └── mandates.js      # it displays current mandat situation in sejm
 │       └── coalition.js     # checking coalition variants
+│       └── currentdebate.js # Streams current live debate in the voice channel│
+│   └── utility/
+│       └── leave.js            # Makes the bot leave the voice channel
+│       └── server.js           # Returns server information
+│       └── user.js             # Returns information about the command executor
 ├── events/                  # Discord event handlers (e.g., ready)
 ├── data/
 │   └── partyColours.json    # political club color mapping
@@ -172,6 +179,10 @@ Examples:
 ### Użycie komendy `/coalition`:
 
 ![Screen 6](./data/screen6.png)
+
+### Użycie komendy `/currentDebate`:
+
+![Screen 7](./data/screen7.png)
 
 ---
 
