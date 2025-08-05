@@ -180,7 +180,7 @@ Examples:
 
 ![Screen 6](./data/screen6.png)
 
-### Użycie komendy `/currentDebate`:
+### Użycie komendy `/currentdebate`:
 
 ![Screen 7](./data/screen7.png)
 
