@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { getVoiceConnection } = require('@discordjs/voice')
 
 module.exports = {
@@ -9,7 +9,10 @@ module.exports = {
 		const connection = getVoiceConnection(guildId)
 
 		if (!connection) {
-			return interaction.reply({ content: '❌ Bot nie jest połączony z żadnym kanałem głosowym.', ephemeral: true })
+			return interaction.reply({
+				content: '❌ Musisz być na kanale głosowym!',
+				flags: MessageFlags.Ephemeral,
+			})
 		}
 
 		connection.destroy()

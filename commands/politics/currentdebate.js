@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const {
 	joinVoiceChannel,
 	createAudioPlayer,
@@ -19,7 +19,10 @@ module.exports = {
 		const voiceChannel = user.voice?.channel
 
 		if (!voiceChannel) {
-			return interaction.reply({ content: '❌ Musisz być na kanale głosowym!', ephemeral: true })
+			return interaction.reply({
+				content: '❌ Musisz być na kanale głosowym!',
+				flags: MessageFlags.Ephemeral,
+			})
 		}
 
 		await interaction.deferReply()
