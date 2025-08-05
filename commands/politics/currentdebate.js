@@ -30,7 +30,7 @@ module.exports = {
 			const liveVideo = searchResults.find(video => video.live)
 
 			if (!liveVideo) {
-				return interaction.editReply('🔴 Obecnie brak transmisji na żywo na kanale Republika.')
+				return interaction.editReply('🔴 Obecnie brak transmisji na żywo na kanale SejmRP.')
 			}
 
 			const liveUrl = liveVideo.url
