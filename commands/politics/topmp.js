@@ -114,6 +114,11 @@ module.exports = {
 						.setStyle(ButtonStyle.Secondary)
 						.setDisabled(page === 0),
 					new ButtonBuilder()
+						.setCustomId('page_display')
+						.setLabel(`Strona ${page + 1} z ${totalPages}`)
+						.setStyle(ButtonStyle.Secondary)
+						.setDisabled(true), // NIEAKTYWNY
+					new ButtonBuilder()
 						.setCustomId('next')
 						.setLabel('➡️ +1 strona')
 						.setStyle(ButtonStyle.Secondary)
