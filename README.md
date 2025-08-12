@@ -158,29 +158,29 @@ Examples:
 
 ## 🖥️ Screens
 
-### Użycie komendy `/mp Kukiz`:
+### Command `/mp Kukiz`:
 
 ![Screen 1](./data/screen.png)
 
-### Użycie komendy `/topmp sort: Frekwencja page: 22`:
+### Command `/topmp sort: Frekwencja page: 22`:
 
 ![Screen 2](./data/screen2.png)
 
-### Użycie komendy `/guessmp`:
+### Command `/guessmp`:
 
 ![Screen 3](./data/screen3.png)
 
 ![Screen 4](./data/screen4.png)
 
-### Użycie komendy `/mandates`:
+### Command `/mandates`:
 
 ![Screen 5](./data/screen5.png)
 
-### Użycie komendy `/coalition`:
+### Command `/coalition`:
 
 ![Screen 6](./data/screen6.png)
 
-### Użycie komendy `/currentdebate`:
+### Command `/currentdebate`:
 
 ![Screen 7](./data/screen7.png)
 
